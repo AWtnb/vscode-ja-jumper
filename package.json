@@ -11,13 +11,16 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:plaintext",
     "onLanguage:markdown",
-    "onLanguage:html"
+    "onCommand:ja-jumper.helloJumper"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
+      {
+        "command": "ja-jumper.helloJumper",
+        "title": "enable ja-jumper"
+      }
     ],
     "configuration": {
       "title": "ja-jumper",
@@ -31,23 +34,23 @@
     },
     "keybindings": [
       {
-        "command": "bnkn.jumpFore",
+        "command": "ja-jumper.jumpFore",
         "key": "alt+j",
         "when": "editorTextFocus"
       },
       {
-        "command": "bnkn.jumpBack",
+        "command": "ja-jumper.jumpBack",
         "key": "alt+k",
         "when": "editorTextFocus"
       },
       {
-        "command": "bnkn.jumpFore",
+        "command": "ja-jumper.jumpFore",
         "args": "true",
         "key": "alt+shift+j",
         "when": "editorTextFocus"
       },
       {
-        "command": "bnkn.jumpBack",
+        "command": "ja-jumper.jumpBack",
         "args": "true",
         "key": "alt+shift+k",
         "when": "editorTextFocus"
