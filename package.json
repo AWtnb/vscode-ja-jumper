@@ -11,6 +11,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onLanguage:plaintext",
     "onLanguage:markdown",
     "onCommand:ja-jumper.helloJumper"
   ],
