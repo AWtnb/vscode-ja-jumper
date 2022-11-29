@@ -2,6 +2,10 @@
   "name": "ja-jumper",
   "displayName": "ja-jumper",
   "description": "cursor-jumper between Japanese punctuations.",
+  "icon": "images/logo.png",
+  "repository": {
+    "url": "https://github.com/AWtnb/vscode-ja-jumper"
+  },
   "publisher": "awtnb",
   "version": "0.0.1",
   "engines": {
