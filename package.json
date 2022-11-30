@@ -59,6 +59,11 @@
         "args": "true",
         "key": "alt+shift+k",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "ja-jumper.swapAnchor",
+        "key": "alt+shift+s",
+        "when": "editorTextFocus"
       }
     ]
   },

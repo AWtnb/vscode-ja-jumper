@@ -38,13 +38,12 @@ class ActiveCursor {
   }
 }
 
-const scrollToLine = (line:number) => {
+const scrollToLine = (line: number) => {
   vscode.commands.executeCommand("revealLine", {
     lineNumber: line,
     at: "center",
   });
-}
-
+};
 
 export class Jumper {
   readonly delimiters: string[];
@@ -86,9 +85,9 @@ export class Jumper {
     if (ac.isEndOfLine) {
       const lineIndex = ac.searchNextNonBlankLine();
       const jumpTo = new vscode.Position(lineIndex, editor.document.lineAt(lineIndex).firstNonWhitespaceCharacterIndex);
-      const anchor = (selecting)? ac.ancPos : jumpTo;
+      const anchor = selecting ? ac.ancPos : jumpTo;
       editor.selection = new vscode.Selection(anchor, jumpTo);
-      scrollToLine(jumpTo.line)
+      scrollToLine(jumpTo.line);
       return;
     }
     const afterCursor = ac.curLine.text.substring(ac.curPos.character);
@@ -115,7 +114,7 @@ export class Jumper {
     if (ac.isBeginningOfLine) {
       const lineIndex = ac.searchPreviousNonBlankLine();
       const jumpTo = new vscode.Position(lineIndex, editor.document.lineAt(lineIndex).text.length);
-      const anchor = (selecting)? ac.ancPos : jumpTo;
+      const anchor = selecting ? ac.ancPos : jumpTo;
       editor.selection = new vscode.Selection(anchor, jumpTo);
       scrollToLine(jumpTo.line);
       return;
@@ -133,5 +132,13 @@ export class Jumper {
       return;
     }
     editor.selection = new vscode.Selection(ac.curPos, ac.curPos);
+  }
+
+  static swapAnchor() {
+    const editor = vscode.window.activeTextEditor;
+    if (editor && !editor.selection.isEmpty) {
+      const ac = new ActiveCursor(editor);
+      editor.selection = new vscode.Selection(ac.curPos, ac.ancPos);
+    }
   }
 }
