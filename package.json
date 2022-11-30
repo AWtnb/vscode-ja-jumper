@@ -33,7 +33,12 @@
         "ja-jumper.extras": {
           "type": "string",
           "default": "←↓↑→○●▲△▼▽◆◇■□★☆",
-          "description": "extra punctuations as cursor jump delimiter."
+          "description": "additional punctuations as delimiter."
+        },
+        "ja-jumper.exclude": {
+          "type": "string",
+          "default": "",
+          "description": "punctuations not treated as delimiter. this setting overrides `extras`."
         }
       }
     },

@@ -48,10 +48,10 @@ const scrollToLine = (line: number) => {
 export class Jumper {
   readonly delimiters: string[];
 
-  constructor(extra: string = "") {
+  constructor(extra: string = "", exclude:string="") {
     const full = "、，。．；：「」『』【】（）〔〕《》〈〉［］“”‘’・！？～／…―　";
     const half = "[]().,=<>:;`'\" #/-";
-    this.delimiters = (full + half + extra).split("");
+    this.delimiters = (full + half + extra).split("").filter(c => exclude.indexOf(c) == -1);
   }
 
   private searchFore(s: string): number {
