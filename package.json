@@ -49,14 +49,12 @@
         "when": "editorTextFocus"
       },
       {
-        "command": "ja-jumper.jumpFore",
-        "args": "true",
+        "command": "ja-jumper.jumpForeSelect",
         "key": "alt+shift+j",
         "when": "editorTextFocus"
       },
       {
-        "command": "ja-jumper.jumpBack",
-        "args": "true",
+        "command": "ja-jumper.jumpBackSelect",
         "key": "alt+shift+k",
         "when": "editorTextFocus"
       },
