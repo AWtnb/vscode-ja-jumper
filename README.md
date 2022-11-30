@@ -22,3 +22,8 @@ Enabled on plaintext or markdown file, or manually, `ja-jumper.helloJumper` comm
 ```
 
 Modifiable with `ja-jumper.extras` and `ja-jumper.exclude` in `setting.json`.
+
+
+---
+
+アイコン画像：[「ロイター板のイラスト」 by いらすとや](https://www.irasutoya.com/2014/11/blog-post_66.html)
