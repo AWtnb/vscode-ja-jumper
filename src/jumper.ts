@@ -48,10 +48,10 @@ const scrollToLine = (line: number) => {
 export class Jumper {
   readonly delimiters: string[];
 
-  constructor(extra: string = "", exclude:string="") {
+  constructor(extra: string = "", exclude: string = "") {
     const full = "、，。．；：「」『』【】（）〔〕《》〈〉［］“”‘’・！？～／…―　";
     const half = "[]().,=<>:;`'\" #/-";
-    this.delimiters = (full + half + extra).split("").filter(c => exclude.indexOf(c) == -1);
+    this.delimiters = (full + half + extra).split("").filter((c) => exclude.indexOf(c) == -1);
   }
 
   private searchFore(s: string): number {
@@ -136,9 +136,10 @@ export class Jumper {
 
   static swapAnchor() {
     const editor = vscode.window.activeTextEditor;
-    if (editor && !editor.selection.isEmpty) {
-      const ac = new ActiveCursor(editor);
-      editor.selection = new vscode.Selection(ac.curPos, ac.ancPos);
+    if (editor) {
+      editor.selections = editor.selections.map((sel) => {
+        return new vscode.Selection(sel.active, sel.anchor);
+      });
     }
   }
 }
