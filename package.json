@@ -15,17 +15,15 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:plaintext",
-    "onLanguage:markdown",
-    "onCommand:ja-jumper.helloJumper"
+    "onCommand:ja-jumper.jumpFore",
+    "onCommand:ja-jumper.jumpBack",
+    "onCommand:ja-jumper.jumpForeSelect",
+    "onCommand:ja-jumper.jumpBackSelect",
+    "onCommand:ja-jumper.swapAnchor"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "ja-jumper.helloJumper",
-        "title": "enable ja-jumper"
-      }
     ],
     "configuration": {
       "title": "ja-jumper",

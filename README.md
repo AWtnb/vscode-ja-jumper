@@ -4,8 +4,6 @@
 
 ## Features
 
-Enabled on plaintext or markdown file, or manually, `ja-jumper.helloJumper` command.
-
 ### Default behavior
 
 + Jumping:
