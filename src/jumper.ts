@@ -76,11 +76,7 @@ export class Jumper {
     return -1;
   }
 
-  jumpFore(selecting: boolean = false) {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
+  jumpFore(editor:vscode.TextEditor, selecting: boolean = false) {
     const ac = new ActiveCursor(editor);
     if (ac.isEndOfLine) {
       const lineIndex = ac.searchNextNonBlankLine();
@@ -105,11 +101,7 @@ export class Jumper {
     editor.selection = new vscode.Selection(ac.curPos, ac.curPos);
   }
 
-  jumpBack(selecting: boolean = false) {
-    const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-      return;
-    }
+  jumpBack(editor:vscode.TextEditor, selecting: boolean = false) {
     const ac = new ActiveCursor(editor);
     if (ac.isBeginningOfLine) {
       const lineIndex = ac.searchPreviousNonBlankLine();
@@ -134,12 +126,9 @@ export class Jumper {
     editor.selection = new vscode.Selection(ac.curPos, ac.curPos);
   }
 
-  static swapAnchor() {
-    const editor = vscode.window.activeTextEditor;
-    if (editor) {
-      editor.selections = editor.selections.map((sel) => {
-        return new vscode.Selection(sel.active, sel.anchor);
-      });
-    }
+  static swapAnchor(editor:vscode.TextEditor) {
+    editor.selections = editor.selections.map((sel) => {
+      return new vscode.Selection(sel.active, sel.anchor);
+    });
   }
 }
