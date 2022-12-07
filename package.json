@@ -7,7 +7,7 @@
     "url": "https://github.com/AWtnb/vscode-ja-jumper"
   },
   "publisher": "awtnb",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "engines": {
     "vscode": "^1.73.0"
   },
@@ -23,8 +23,7 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-    ],
+    "commands": [],
     "configuration": {
       "title": "ja-jumper",
       "properties": {
