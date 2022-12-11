@@ -2,6 +2,8 @@
 
 ( ﾟдﾟ) ＜ じゃじゃんぱー。
 
+Cursor-jumper for Japanese (and other any language) punctuations.
+
 ## Features
 
 ### Default behavior
@@ -16,10 +18,10 @@
 ### Target punctuations
 
 ```
-、，。．；：「」『』【】（）〔〕《》〈〉［］“”‘’・！？～／…―　[]().,=<>:;`'\" #/-"
+、，。．；：「」『』【】（）〔〕《》〈〉［］“”‘’・！？～／…―　←↓↑→○●▲△▼▽◆◇■□★☆〓[]().,=<>:;`'\" #/-
 ```
 
-Modifiable with `ja-jumper.extras` and `ja-jumper.exclude` in `setting.json`.
+Modifiable with `ja-jumper.delimiters` in `setting.json`.
 
 
 ---
