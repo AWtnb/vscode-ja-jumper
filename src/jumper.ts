@@ -38,11 +38,10 @@ class Cursor {
   }
 }
 
-const scrollToLine = (line: number, position: string = "center") => {
-  vscode.commands.executeCommand("revealLine", {
-    lineNumber: line,
-    at: position,
-  });
+const scrollToCursor = (editor: vscode.TextEditor) => {
+  const cursor = editor.selection;
+  const range = new vscode.Range(cursor.active, cursor.active);
+  editor.revealRange(range);
 };
 
 const makeSelection = (anchor: vscode.Position, active: vscode.Position): vscode.Selection => {
@@ -51,11 +50,9 @@ const makeSelection = (anchor: vscode.Position, active: vscode.Position): vscode
 
 export class Jumper {
   readonly delimiters: string[];
-  readonly scrollPosition: string;
 
-  constructor(delimiters: string = "", scrollPosition: string = "") {
+  constructor(delimiters: string = "") {
     this.delimiters = delimiters.split("");
-    this.scrollPosition = scrollPosition;
   }
 
   private searchFore(s: string): number {
@@ -91,7 +88,7 @@ export class Jumper {
       const jumpTo = new vscode.Position(lineIndex, editor.document.lineAt(lineIndex).firstNonWhitespaceCharacterIndex);
       const anchor = selecting ? cursor.anchor : jumpTo;
       editor.selection = makeSelection(anchor, jumpTo);
-      scrollToLine(jumpTo.line, this.scrollPosition);
+      scrollToCursor(editor);
       return;
     }
     const afterCursor = cursor.curLine.text.substring(cursor.active.character);
@@ -100,6 +97,7 @@ export class Jumper {
     const jumpTo = new vscode.Position(cursor.curLine.lineNumber, toChar);
     const anchor = selecting ? cursor.anchor : jumpTo;
     editor.selection = makeSelection(anchor, jumpTo);
+    scrollToCursor(editor);
   }
 
   jumpBack(editor: vscode.TextEditor, selecting: boolean = false) {
@@ -113,7 +111,7 @@ export class Jumper {
       const jumpTo = new vscode.Position(lineIndex, editor.document.lineAt(lineIndex).text.length);
       const anchor = selecting ? cursor.anchor : jumpTo;
       editor.selection = makeSelection(anchor, jumpTo);
-      scrollToLine(jumpTo.line, this.scrollPosition);
+      scrollToCursor(editor);
       return;
     }
     const beforeCursor = cursor.curLine.text.substring(0, cursor.active.character);
@@ -122,11 +120,15 @@ export class Jumper {
     const jumpTo = new vscode.Position(cursor.curLine.lineNumber, toChar);
     const anchor = selecting ? cursor.anchor : jumpTo;
     editor.selection = makeSelection(anchor, jumpTo);
+    scrollToCursor(editor);
   }
 
   static swapAnchor(editor: vscode.TextEditor) {
     editor.selections = editor.selections.map((sel) => {
       return makeSelection(sel.active, sel.anchor);
     });
+    if (editor.selections.length == 1) {
+      scrollToCursor(editor);
+    }
   }
 }

@@ -4,8 +4,7 @@ import { Jumper } from "./jumper";
 
 const config = vscode.workspace.getConfiguration("ja-jumper");
 const delimiters: string = config.get("delimiters") || "";
-const scrollPosition: string = config.get("scrollPosition") || "";
-const JUMPER = new Jumper(delimiters, scrollPosition);
+const JUMPER = new Jumper(delimiters);
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(

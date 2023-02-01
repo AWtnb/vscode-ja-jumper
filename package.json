@@ -31,11 +31,6 @@
           "type": "string",
           "default": "、，。．；：「」『』【】（）〔〕《》〈〉［］“”‘’・！？～／…―　←↓↑→○●▲△▼▽◆◇■□★☆〓[]().,=<>:;`'\" #/-",
           "description": "delimiters for cursor jump."
-        },
-        "ja-jumper.scrollPosition": {
-          "type": "string",
-          "default": "",
-          "description": "logical position at which line has to be revealed: `top` or `center` or `bottom` (or empty)"
         }
       }
     },
