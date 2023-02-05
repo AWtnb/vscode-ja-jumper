@@ -31,6 +31,11 @@
           "type": "string",
           "default": "、，。．；：「」『』【】（）〔〕《》〈〉［］“”‘’・！？～／…―　←↓↑→○●▲△▼▽◆◇■□★☆〓[]().,=<>:;`'\" #/-",
           "description": "delimiters for cursor jump."
+        },
+        "ja-jumper.isGreedy": {
+          "type": "boolean",
+          "default": true,
+          "description": "if true, jump as far as possible."
         }
       }
     },

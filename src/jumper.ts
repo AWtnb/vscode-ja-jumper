@@ -50,16 +50,23 @@ const makeSelection = (anchor: vscode.Position, active: vscode.Position): vscode
 
 export class Jumper {
   readonly delimiters: string[];
+  readonly greedy: boolean;
 
-  constructor(delimiters: string = "") {
+  constructor(delimiters: string = "", greedy: boolean = true) {
     this.delimiters = delimiters.split("");
+    this.greedy = greedy;
   }
 
   private searchFore(s: string): number {
     for (let i = 0; i < s.length - 1; i++) {
       const c = s.charAt(i);
-      const next = s.charAt(i + 1);
-      if (this.delimiters.includes(c) && !this.delimiters.includes(next)) {
+      if (this.delimiters.includes(c)) {
+        if (this.greedy) {
+          const next = s.charAt(i + 1);
+          if (this.delimiters.includes(next)) {
+            continue;
+          }
+        }
         return i;
       }
     }
@@ -69,8 +76,13 @@ export class Jumper {
   private searchBack(s: string): number {
     for (let i = 0; i < s.length - 1; i++) {
       const c = s.charAt(s.length - i - 1);
-      const previous = s.charAt(s.length - i - 2);
-      if (this.delimiters.includes(c) && !this.delimiters.includes(previous)) {
+      if (this.delimiters.includes(c)) {
+        if (this.greedy) {
+          const previous = s.charAt(s.length - i - 2);
+          if (this.delimiters.includes(previous)) {
+            continue;
+          }
+        }
         return i;
       }
     }

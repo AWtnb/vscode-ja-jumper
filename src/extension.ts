@@ -4,7 +4,8 @@ import { Jumper } from "./jumper";
 
 const config = vscode.workspace.getConfiguration("ja-jumper");
 const delimiters: string = config.get("delimiters") || "";
-const JUMPER = new Jumper(delimiters);
+const isGreedy: boolean = config.get("isGreedy") || false;
+const JUMPER = new Jumper(delimiters, isGreedy);
 
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(

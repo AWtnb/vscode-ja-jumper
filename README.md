@@ -21,8 +21,8 @@ Cursor-jumper for Japanese (and other any language) punctuations.
 、，。．；：「」『』【】（）〔〕《》〈〉［］“”‘’・！？～／…―　←↓↑→○●▲△▼▽◆◇■□★☆〓[]().,=<>:;`'\" #/-
 ```
 
-Modifiable with `ja-jumper.delimiters` in `setting.json`.
-
++ Modifiable with `ja-jumper.delimiters` in `setting.json`.
++ If `ja-jumper.isGreedy` in `setting.json` is `true` (default), cursor jumps as far as possible.
 
 ---
 
