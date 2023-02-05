@@ -7,13 +7,17 @@ class Cursor {
   readonly curLine: vscode.TextLine;
   readonly isBeginningOfLine: boolean;
   readonly isEndOfLine: boolean;
+  readonly isBeginningOfFile: boolean;
+  readonly isEndOfFile: boolean;
   constructor(editor: vscode.TextEditor) {
     this.editor = editor;
     this.anchor = this.editor.selection.anchor;
     this.active = this.editor.selection.active;
     this.curLine = this.editor.document.lineAt(this.active.line);
     this.isBeginningOfLine = this.active.character == 0;
+    this.isBeginningOfFile = this.isBeginningOfLine && this.active.line == 0;
     this.isEndOfLine = this.active.character == this.curLine.text.length;
+    this.isEndOfFile = this.isEndOfLine && this.active.line == editor.document.lineCount - 1;
   }
 
   searchNextNonBlankLine(): number {
@@ -95,6 +99,9 @@ export class Jumper {
       editor.selection = makeSelection(cursor.active, cursor.active);
       return;
     }
+    if (cursor.isEndOfFile) {
+      return;
+    }
     if (cursor.isEndOfLine) {
       const lineIndex = cursor.searchNextNonBlankLine();
       const jumpTo = new vscode.Position(lineIndex, editor.document.lineAt(lineIndex).firstNonWhitespaceCharacterIndex);
@@ -116,6 +123,9 @@ export class Jumper {
     const cursor = new Cursor(editor);
     if (!selecting && !editor.selection.isEmpty) {
       editor.selection = makeSelection(cursor.active, cursor.active);
+      return;
+    }
+    if (cursor.isBeginningOfFile) {
       return;
     }
     if (cursor.isBeginningOfLine) {
