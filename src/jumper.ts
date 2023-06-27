@@ -1,56 +1,16 @@
 import * as vscode from "vscode";
 
-class Cursor {
-  readonly editor: vscode.TextEditor;
-  readonly anchor: vscode.Position;
-  readonly active: vscode.Position;
-  readonly curLine: vscode.TextLine;
-  readonly isBeginningOfLine: boolean;
-  readonly isEndOfLine: boolean;
-  readonly isBeginningOfFile: boolean;
-  readonly isEndOfFile: boolean;
-  constructor(editor: vscode.TextEditor) {
-    this.editor = editor;
-    this.anchor = this.editor.selection.anchor;
-    this.active = this.editor.selection.active;
-    this.curLine = this.editor.document.lineAt(this.active.line);
-    this.isBeginningOfLine = this.active.character == 0;
-    this.isBeginningOfFile = this.isBeginningOfLine && this.active.line == 0;
-    this.isEndOfLine = this.active.character == this.curLine.text.length;
-    this.isEndOfFile = this.isEndOfLine && this.active.line == editor.document.lineCount - 1;
-  }
+import { Cursor } from "./cursor";
 
-  searchNextNonBlankLine(): number {
-    const max = this.editor.document.lineCount;
-    for (let i = this.curLine.lineNumber + 1; i < max; i++) {
-      const line = this.editor.document.lineAt(i).text;
-      if (line.trim().length > 0) {
-        return i;
-      }
-    }
-    return max - 1;
-  }
+// const scrollToCursor = (editor: vscode.TextEditor) => {
+//   const cursor = editor.selection;
+//   const range = new vscode.Range(cursor.active, cursor.active);
+//   editor.revealRange(range);
+// };
 
-  searchPreviousNonBlankLine(): number {
-    for (let i = 1; i <= this.curLine.lineNumber; i++) {
-      const line = this.editor.document.lineAt(this.curLine.lineNumber - i).text;
-      if (line.trim().length > 0) {
-        return this.curLine.lineNumber - i;
-      }
-    }
-    return 0;
-  }
-}
-
-const scrollToCursor = (editor: vscode.TextEditor) => {
-  const cursor = editor.selection;
-  const range = new vscode.Range(cursor.active, cursor.active);
-  editor.revealRange(range);
-};
-
-const makeSelection = (anchor: vscode.Position, active: vscode.Position): vscode.Selection => {
-  return new vscode.Selection(anchor, active);
-};
+// const makeSelection = (anchor: vscode.Position, active: vscode.Position): vscode.Selection => {
+//   return new vscode.Selection(anchor, active);
+// };
 
 export class Jumper {
   readonly delimiters: string;
@@ -96,61 +56,51 @@ export class Jumper {
   jumpFore(editor: vscode.TextEditor, selecting: boolean = false) {
     const cursor = new Cursor(editor);
     if (!selecting && !editor.selection.isEmpty) {
-      editor.selection = makeSelection(cursor.active, cursor.active);
+      cursor.update(cursor.active, cursor.active);
       return;
     }
-    if (cursor.isEndOfFile) {
+    if (cursor.isEOF()) {
       return;
     }
-    if (cursor.isEndOfLine) {
+    if (cursor.isEOL()) {
       const lineIndex = cursor.searchNextNonBlankLine();
       const jumpTo = new vscode.Position(lineIndex, editor.document.lineAt(lineIndex).firstNonWhitespaceCharacterIndex);
       const anchor = selecting ? cursor.anchor : jumpTo;
-      editor.selection = makeSelection(anchor, jumpTo);
-      scrollToCursor(editor);
+      cursor.update(anchor, jumpTo);
       return;
     }
-    const afterCursor = cursor.curLine.text.substring(cursor.active.character);
+    const curLine = cursor.getLine()
+    const afterCursor = curLine.text.substring(cursor.active.character);
     const delta = this.searchFore(afterCursor);
-    const toChar = delta < 0 ? cursor.curLine.text.length : cursor.active.character + delta + 1;
-    const jumpTo = new vscode.Position(cursor.curLine.lineNumber, toChar);
+    const toChar = delta < 0 ? curLine.text.length : cursor.active.character + delta + 1;
+    const jumpTo = new vscode.Position(curLine.lineNumber, toChar);
     const anchor = selecting ? cursor.anchor : jumpTo;
-    editor.selection = makeSelection(anchor, jumpTo);
-    scrollToCursor(editor);
+    cursor.update(anchor, jumpTo);
   }
 
   jumpBack(editor: vscode.TextEditor, selecting: boolean = false) {
     const cursor = new Cursor(editor);
     if (!selecting && !editor.selection.isEmpty) {
-      editor.selection = makeSelection(cursor.active, cursor.active);
+      cursor.update(cursor.active, cursor.active);
       return;
     }
-    if (cursor.isBeginningOfFile) {
+    if (cursor.isBOF()) {
       return;
     }
-    if (cursor.isBeginningOfLine) {
+    if (cursor.isBOL()) {
       const lineIndex = cursor.searchPreviousNonBlankLine();
       const jumpTo = new vscode.Position(lineIndex, editor.document.lineAt(lineIndex).text.length);
       const anchor = selecting ? cursor.anchor : jumpTo;
-      editor.selection = makeSelection(anchor, jumpTo);
-      scrollToCursor(editor);
+      cursor.update(anchor, jumpTo);
       return;
     }
-    const beforeCursor = cursor.curLine.text.substring(0, cursor.active.character);
+    const curLine = cursor.getLine()
+    const beforeCursor = curLine.text.substring(0, cursor.active.character);
     const delta = this.searchBack(beforeCursor);
     const toChar = delta < 0 ? 0 : cursor.active.character - delta - 1;
-    const jumpTo = new vscode.Position(cursor.curLine.lineNumber, toChar);
+    const jumpTo = new vscode.Position(curLine.lineNumber, toChar);
     const anchor = selecting ? cursor.anchor : jumpTo;
-    editor.selection = makeSelection(anchor, jumpTo);
-    scrollToCursor(editor);
+    cursor.update(anchor, jumpTo);
   }
 
-  static swapAnchor(editor: vscode.TextEditor) {
-    editor.selections = editor.selections.map((sel) => {
-      return makeSelection(sel.active, sel.anchor);
-    });
-    if (editor.selections.length == 1) {
-      scrollToCursor(editor);
-    }
-  }
 }

@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 
 import { Jumper } from "./jumper";
+import { Cursor } from "./cursor";
 
 export function activate(context: vscode.ExtensionContext) {
   const config = vscode.workspace.getConfiguration("ja-jumper");
@@ -30,7 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
   );
   context.subscriptions.push(
     vscode.commands.registerTextEditorCommand("ja-jumper.swapAnchor", (editor: vscode.TextEditor) => {
-      Jumper.swapAnchor(editor);
+      new Cursor(editor).swapAnchor();
     })
   );
 }
