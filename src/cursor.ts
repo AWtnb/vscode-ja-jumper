@@ -15,6 +15,20 @@ export class Cursor {
     return this.editor.document.lineAt(this.active.line);
   }
 
+  getNextLine(): vscode.TextLine | null {
+    if (this.active.line == this.editor.document.lineCount - 1) {
+      return null;
+    }
+    return this.editor.document.lineAt(this.active.line + 1);
+  }
+
+  getPreviousLine(): vscode.TextLine | null {
+    if (this.active.line == 0) {
+      return null;
+    }
+    return this.editor.document.lineAt(this.active.line - 1);
+  }
+
   isBOL(): boolean {
     // BOL: beginning of line
     return this.active.character == 0;
@@ -47,12 +61,35 @@ export class Cursor {
   }
 
   searchPreviousNonBlankLine(): number {
-    const curLine = this.getLine()
+    const curLine = this.getLine();
     for (let i = 1; i <= curLine.lineNumber; i++) {
-      const delta = curLine.lineNumber - i;
-      const line = this.editor.document.lineAt(delta).text;
+      const lineIdx = curLine.lineNumber - i;
+      const line = this.editor.document.lineAt(lineIdx).text;
       if (line.trim().length > 0) {
-        return delta;
+        return lineIdx;
+      }
+    }
+    return 0;
+  }
+
+  searchNextBlankLine(): number {
+    const max = this.editor.document.lineCount;
+    for (let i = this.getLine().lineNumber + 1; i < max; i++) {
+      const line = this.editor.document.lineAt(i).text;
+      if (line.trim().length < 1) {
+        return i;
+      }
+    }
+    return max - 1;
+  }
+
+  searchPreviousBlankLine(): number {
+    const curLine = this.getLine();
+    for (let i = 1; i <= curLine.lineNumber; i++) {
+      const lineIdx = curLine.lineNumber - i;
+      const line = this.editor.document.lineAt(lineIdx).text;
+      if (line.trim().length < 1) {
+        return lineIdx;
       }
     }
     return 0;
