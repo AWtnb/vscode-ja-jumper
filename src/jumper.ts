@@ -2,16 +2,6 @@ import * as vscode from "vscode";
 
 import { Cursor } from "./cursor";
 
-// const scrollToCursor = (editor: vscode.TextEditor) => {
-//   const cursor = editor.selection;
-//   const range = new vscode.Range(cursor.active, cursor.active);
-//   editor.revealRange(range);
-// };
-
-// const makeSelection = (anchor: vscode.Position, active: vscode.Position): vscode.Selection => {
-//   return new vscode.Selection(anchor, active);
-// };
-
 export class Jumper {
   readonly delimiters: string;
   readonly greedy: boolean;
@@ -69,7 +59,7 @@ export class Jumper {
       cursor.update(anchor, jumpTo);
       return;
     }
-    const curLine = cursor.getLine()
+    const curLine = cursor.getLine();
     const afterCursor = curLine.text.substring(cursor.active.character);
     const delta = this.searchFore(afterCursor);
     const toChar = delta < 0 ? curLine.text.length : cursor.active.character + delta + 1;
@@ -94,7 +84,7 @@ export class Jumper {
       cursor.update(anchor, jumpTo);
       return;
     }
-    const curLine = cursor.getLine()
+    const curLine = cursor.getLine();
     const beforeCursor = curLine.text.substring(0, cursor.active.character);
     const delta = this.searchBack(beforeCursor);
     const toChar = delta < 0 ? 0 : cursor.active.character - delta - 1;
@@ -102,5 +92,4 @@ export class Jumper {
     const anchor = selecting ? cursor.anchor : jumpTo;
     cursor.update(anchor, jumpTo);
   }
-
 }
