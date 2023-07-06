@@ -21,8 +21,12 @@
   "activationEvents": [
     "onCommand:ja-jumper.jumpFore",
     "onCommand:ja-jumper.jumpBack",
+    "onCommand:ja-jumper.jumpDown",
+    "onCommand:ja-jumper.jumpUp",
     "onCommand:ja-jumper.jumpForeSelect",
     "onCommand:ja-jumper.jumpBackSelect",
+    "onCommand:ja-jumper.jumpDownSelect",
+    "onCommand:ja-jumper.jumpUpSelect",
     "onCommand:ja-jumper.swapAnchor"
   ],
   "main": "./out/extension.js",
@@ -55,6 +59,16 @@
         "when": "editorTextFocus"
       },
       {
+        "command": "ja-jumper.jumpDown",
+        "key": "ctrl+down",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "ja-jumper.jumpUp",
+        "key": "ctrl+up",
+        "when": "editorTextFocus"
+      },
+      {
         "command": "ja-jumper.jumpForeSelect",
         "key": "alt+shift+j",
         "when": "editorTextFocus"
@@ -62,6 +76,16 @@
       {
         "command": "ja-jumper.jumpBackSelect",
         "key": "alt+shift+k",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "ja-jumper.jumpDownSelect",
+        "key": "ctrl+shift+down",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "ja-jumper.jumpUpSelect",
+        "key": "ctrl+shift+up",
         "when": "editorTextFocus"
       },
       {

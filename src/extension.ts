@@ -30,6 +30,26 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
   context.subscriptions.push(
+    vscode.commands.registerTextEditorCommand("ja-jumper.jumpDown", (editor: vscode.TextEditor) => {
+      JUMPER.jumpDown(editor, false);
+    })
+  );
+  context.subscriptions.push(
+    vscode.commands.registerTextEditorCommand("ja-jumper.jumpDownSelect", (editor: vscode.TextEditor) => {
+      JUMPER.jumpDown(editor, true);
+    })
+  );
+  context.subscriptions.push(
+    vscode.commands.registerTextEditorCommand("ja-jumper.jumpUp", (editor: vscode.TextEditor) => {
+      JUMPER.jumpUp(editor, false);
+    })
+  );
+  context.subscriptions.push(
+    vscode.commands.registerTextEditorCommand("ja-jumper.jumpUpSelect", (editor: vscode.TextEditor) => {
+      JUMPER.jumpUp(editor, true);
+    })
+  );
+  context.subscriptions.push(
     vscode.commands.registerTextEditorCommand("ja-jumper.swapAnchor", (editor: vscode.TextEditor) => {
       new Cursor(editor).swapAnchor();
     })

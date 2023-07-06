@@ -8,10 +8,11 @@ Cursor-jumper for Japanese (and other any language) punctuations.
 
 ### Default behavior
 
-+ Jumping:
++ Jumping (selectable with `Shift` modifier):
     + `alt+j` snaps cursor forward to next punctuation.
     + `alt+k` snaps cursor backward to previous punctuation.
-    + You can select characters with `Shift` modifier.
+    + `ctrl+down` snaps cursor to the bottom of block.
+    + `ctrl+up` snaps cursor to the top of block.
 + Swapping:
     + `alt+shift+s` swaps selection anchor and active cursor position.
 
