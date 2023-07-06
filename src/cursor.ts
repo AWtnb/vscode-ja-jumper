@@ -47,10 +47,12 @@ export class Cursor {
   }
 
   searchPreviousNonBlankLine(): number {
-    for (let i = 1; i <= this.getLine().lineNumber; i++) {
-      const line = this.editor.document.lineAt(this.getLine().lineNumber - i).text;
+    const curLine = this.getLine()
+    for (let i = 1; i <= curLine.lineNumber; i++) {
+      const delta = curLine.lineNumber - i;
+      const line = this.editor.document.lineAt(delta).text;
       if (line.trim().length > 0) {
-        return this.getLine().lineNumber - i;
+        return delta;
       }
     }
     return 0;
