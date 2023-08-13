@@ -1,19 +1,13 @@
 import * as vscode from "vscode";
 
-class SelectionUnifier {
-  private readonly _base: vscode.Selection;
-  constructor(sel: vscode.Selection) {
-    this._base = sel;
+const unifySelections = (base: vscode.Selection, another: vscode.Selection): vscode.Selection => {
+  const start = base.start.isBeforeOrEqual(another.start) ? base.start : another.start;
+  const end = base.end.isAfterOrEqual(another.end) ? base.end : another.end;
+  if (base.isReversed) {
+    return new vscode.Selection(end, start);
   }
-  with(another: vscode.Selection): vscode.Selection {
-    const start = this._base.start.isBeforeOrEqual(another.start) ? this._base.start : another.start;
-    const end = this._base.end.isAfterOrEqual(another.end) ? this._base.end : another.end;
-    if (this._base.isReversed) {
-      return new vscode.Selection(end, start);
-    }
-    return new vscode.Selection(start, end);
-  }
-}
+  return new vscode.Selection(start, end);
+};
 
 export class SelectionHandler {
   private readonly _sels: vscode.Selection[];
@@ -48,8 +42,7 @@ export class SelectionHandler {
       }
       if (last.intersection(cur)) {
         sels.pop();
-        const uni = new SelectionUnifier(last);
-        sels.push(uni.with(cur));
+        sels.push(unifySelections(last, cur));
       } else {
         sels.push(cur);
       }
