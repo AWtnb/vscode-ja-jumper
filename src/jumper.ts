@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 
 import { Cursor } from "./cursor";
+import { SelectionHandler } from "./selection-handler";
 
 export class Jumper {
   readonly delimiters: string;
@@ -44,94 +45,102 @@ export class Jumper {
   }
 
   jumpFore(editor: vscode.TextEditor, selecting: boolean = false) {
-    const cursor = new Cursor(editor);
-    if (!selecting && !editor.selection.isEmpty) {
-      cursor.unselect();
-      return;
-    }
-    if (cursor.isEOF) {
-      return;
-    }
-    if (cursor.isEOL) {
-      cursor.toBeginningOfNextBlock(selecting);
-      return;
-    }
-    const curLine = cursor.line;
-    const afterCursor = curLine.text.substring(cursor.active.character);
-    const delta = this.searchFore(afterCursor);
-    const toChar = delta < 0 ? curLine.text.length : cursor.active.character + delta + 1;
-    cursor.snapTo(curLine.lineNumber, toChar, selecting);
+    const sels: vscode.Selection[] = editor.selections.map((sel, idx) => {
+      const cursor = new Cursor(editor, idx);
+      if (!selecting && !sel.isEmpty) {
+        return cursor.collapseSelection();
+      }
+      if (cursor.isEOF) {
+        return sel;
+      }
+      if (cursor.isEOL) {
+        return cursor.toBeginningOfNextBlock(selecting);
+      }
+      const curLine = cursor.line;
+      const afterCursor = curLine.text.substring(cursor.active.character);
+      const delta = this.searchFore(afterCursor);
+      const toChar = delta < 0 ? curLine.text.length : cursor.active.character + delta + 1;
+      return cursor.updateSelection(curLine.lineNumber, toChar, selecting);
+    });
+    const handler = new SelectionHandler(sels);
+    editor.selections = handler.getReduced();
+    editor.revealRange(sels[sels.length - 1]);
   }
 
   jumpBack(editor: vscode.TextEditor, selecting: boolean = false) {
-    const cursor = new Cursor(editor);
-    if (!selecting && !editor.selection.isEmpty) {
-      cursor.unselect();
-      return;
-    }
-    if (cursor.isBOF) {
-      return;
-    }
-    if (cursor.isBOL) {
-      cursor.toEndOfPreviousBlock(selecting);
-      return;
-    }
-    const curLine = cursor.line;
-    const beforeCursor = curLine.text.substring(0, cursor.active.character);
-    const delta = this.searchBack(beforeCursor);
-    const toChar = delta < 0 ? 0 : cursor.active.character - delta - 1;
-    cursor.snapTo(curLine.lineNumber, toChar, selecting);
+    const sels: vscode.Selection[] = editor.selections.map((sel, idx) => {
+      const cursor = new Cursor(editor, idx);
+      if (!selecting && !sel.isEmpty) {
+        return cursor.collapseSelection();
+      }
+      if (cursor.isBOF) {
+        return sel;
+      }
+      if (cursor.isBOL) {
+        return cursor.toEndOfPreviousBlock(selecting);
+      }
+      const curLine = cursor.line;
+      const beforeCursor = curLine.text.substring(0, cursor.active.character);
+      const delta = this.searchBack(beforeCursor);
+      const toChar = delta < 0 ? 0 : cursor.active.character - delta - 1;
+      return cursor.updateSelection(curLine.lineNumber, toChar, selecting);
+    });
+    const handler = new SelectionHandler(sels);
+    editor.selections = handler.getReduced();
+    editor.revealRange(sels[0]);
   }
 
   jumpDown(editor: vscode.TextEditor, selecting: boolean = false) {
-    const cursor = new Cursor(editor);
-    if (!selecting && !editor.selection.isEmpty) {
-      cursor.unselect();
-      return;
-    }
-    if (cursor.isEOF) {
-      return;
-    }
-    const nextLine = cursor.getNextLine();
-    if (!nextLine) {
-      cursor.toEndOfBlock(selecting);
-      return;
-    }
-    const curLine = cursor.line;
-    if (curLine.text.trim().length) {
-      if (nextLine.text.trim().length < 1 && cursor.isEOL) {
-        cursor.toBeginningOfNextBlock(selecting);
-        return;
+    const sels: vscode.Selection[] = editor.selections.map((sel, idx) => {
+      const cursor = new Cursor(editor, idx);
+      if (!selecting && !sel.isEmpty) {
+        return cursor.collapseSelection();
       }
-      cursor.toEndOfBlock(selecting);
-      return;
-    }
-    cursor.toBeginningOfNextBlock(selecting);
+      if (cursor.isEOF) {
+        return sel;
+      }
+      const nextLine = cursor.getNextLine();
+      if (!nextLine) {
+        return cursor.toEndOfBlock(selecting);
+      }
+      const curLine = cursor.line;
+      if (curLine.text.trim().length) {
+        if (nextLine.text.trim().length < 1 && cursor.isEOL) {
+          return cursor.toBeginningOfNextBlock(selecting);
+        }
+        return cursor.toEndOfBlock(selecting);
+      }
+      return cursor.toBeginningOfNextBlock(selecting);
+    });
+    const handler = new SelectionHandler(sels);
+    editor.selections = handler.getReduced();
+    editor.revealRange(sels[sels.length - 1]);
   }
 
   jumpUp(editor: vscode.TextEditor, selecting: boolean = false) {
-    const cursor = new Cursor(editor);
-    if (!selecting && !editor.selection.isEmpty) {
-      cursor.unselect();
-      return;
-    }
-    if (cursor.isBOF) {
-      return;
-    }
-    const prevLine = cursor.getPreviousLine();
-    if (!prevLine) {
-      cursor.toBeginningOfBlock(selecting);
-      return;
-    }
-    const curLine = cursor.line;
-    if (curLine.text.trim().length) {
-      if (prevLine.text.trim().length < 1 && cursor.isBeforeContent) {
-        cursor.toEndOfPreviousBlock(selecting);
-        return;
+    const sels: vscode.Selection[] = editor.selections.map((sel, idx) => {
+      const cursor = new Cursor(editor, idx);
+      if (!selecting && !sel.isEmpty) {
+        return cursor.collapseSelection();
       }
-      cursor.toBeginningOfBlock(selecting);
-      return;
-    }
-    cursor.toEndOfPreviousBlock(selecting);
+      if (cursor.isBOF) {
+        return sel;
+      }
+      const prevLine = cursor.getPreviousLine();
+      if (!prevLine) {
+        return cursor.toBeginningOfBlock(selecting);
+      }
+      const curLine = cursor.line;
+      if (curLine.text.trim().length) {
+        if (prevLine.text.trim().length < 1 && cursor.isBeforeContent) {
+          return cursor.toEndOfPreviousBlock(selecting);
+        }
+        return cursor.toBeginningOfBlock(selecting);
+      }
+      return cursor.toEndOfPreviousBlock(selecting);
+    });
+    const handler = new SelectionHandler(sels);
+    editor.selections = handler.getReduced();
+    editor.revealRange(sels[0]);
   }
 }

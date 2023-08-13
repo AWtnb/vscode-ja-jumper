@@ -10,48 +10,30 @@ export function activate(context: vscode.ExtensionContext) {
   const JUMPER = new Jumper(delimiters, isGreedy);
 
   context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand("ja-jumper.jumpFore", (editor: vscode.TextEditor) => {
-      JUMPER.jumpFore(editor, false);
+    vscode.commands.registerTextEditorCommand("ja-jumper.jumpFore", (editor: vscode.TextEditor, _edit, selecting: boolean = false) => {
+      JUMPER.jumpFore(editor, selecting);
     })
   );
   context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand("ja-jumper.jumpBack", (editor: vscode.TextEditor) => {
-      JUMPER.jumpBack(editor, false);
+    vscode.commands.registerTextEditorCommand("ja-jumper.jumpBack", (editor: vscode.TextEditor, _edit, selecting: boolean = false) => {
+      JUMPER.jumpBack(editor, selecting);
     })
   );
   context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand("ja-jumper.jumpForeSelect", (editor: vscode.TextEditor) => {
-      JUMPER.jumpFore(editor, true);
+    vscode.commands.registerTextEditorCommand("ja-jumper.jumpDown", (editor: vscode.TextEditor, _edit, selecting: boolean = false) => {
+      JUMPER.jumpDown(editor, selecting);
     })
   );
   context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand("ja-jumper.jumpBackSelect", (editor: vscode.TextEditor) => {
-      JUMPER.jumpBack(editor, true);
-    })
-  );
-  context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand("ja-jumper.jumpDown", (editor: vscode.TextEditor) => {
-      JUMPER.jumpDown(editor, false);
-    })
-  );
-  context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand("ja-jumper.jumpDownSelect", (editor: vscode.TextEditor) => {
-      JUMPER.jumpDown(editor, true);
-    })
-  );
-  context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand("ja-jumper.jumpUp", (editor: vscode.TextEditor) => {
-      JUMPER.jumpUp(editor, false);
-    })
-  );
-  context.subscriptions.push(
-    vscode.commands.registerTextEditorCommand("ja-jumper.jumpUpSelect", (editor: vscode.TextEditor) => {
-      JUMPER.jumpUp(editor, true);
+    vscode.commands.registerTextEditorCommand("ja-jumper.jumpUp", (editor: vscode.TextEditor, _edit, selecting: boolean = false) => {
+      JUMPER.jumpUp(editor, selecting);
     })
   );
   context.subscriptions.push(
     vscode.commands.registerTextEditorCommand("ja-jumper.swapAnchor", (editor: vscode.TextEditor) => {
-      new Cursor(editor).swapAnchor();
+      editor.selections = editor.selections.map((sel) => {
+        return new vscode.Selection(sel.active, sel.anchor);
+      });
     })
   );
 }

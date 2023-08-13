@@ -12,10 +12,11 @@ export class Cursor {
   readonly isEOL: boolean; // end of line
   readonly isEOF: boolean; // end of file
 
-  constructor(editor: vscode.TextEditor) {
+  constructor(editor: vscode.TextEditor, idx: number) {
     this.editor = editor;
-    this.anchor = this.editor.selection.anchor;
-    this.active = this.editor.selection.active;
+    const sel = this.editor.selections[idx];
+    this.anchor = sel.anchor;
+    this.active = sel.active;
     this.line = this.editor.document.lineAt(this.active.line);
     this.maxLineIdx = this.editor.document.lineCount - 1;
     this.isBOL = this.active.character == 0;
@@ -83,59 +84,44 @@ export class Cursor {
     return -1;
   }
 
-  reveal(pos: vscode.Position) {
-    const range = new vscode.Range(pos, pos);
-    this.editor.revealRange(range);
-  }
-
-  unselect() {
+  collapseSelection(): vscode.Selection {
     const dest = new vscode.Position(this.active.line, this.active.character);
-    this.editor.selection = new vscode.Selection(dest, dest);
-    this.reveal(dest);
+    const sel = new vscode.Selection(dest, dest);
+    return sel;
   }
 
-  snapTo(lineIdx: number, charIdx: number, selecting: boolean) {
+  updateSelection(lineIdx: number, charIdx: number, selecting: boolean): vscode.Selection {
     const dest = new vscode.Position(lineIdx, charIdx);
     const anchor = selecting ? this.anchor : dest;
-    this.editor.selection = new vscode.Selection(anchor, dest);
-    this.reveal(dest);
+    const sel = new vscode.Selection(anchor, dest);
+    return sel;
   }
 
-  toEndOfBlock(selecting: boolean) {
+  toEndOfBlock(selecting: boolean): vscode.Selection {
     const nextBlank = this.searchNextBlankLine();
     const lineIdx = nextBlank < 0 ? this.maxLineIdx : nextBlank - 1;
     const charIdx = this.editor.document.lineAt(lineIdx).text.length;
-    this.snapTo(lineIdx, charIdx, selecting);
+    return this.updateSelection(lineIdx, charIdx, selecting);
   }
 
-  toBeginningOfNextBlock(selecting: boolean) {
+  toBeginningOfNextBlock(selecting: boolean): vscode.Selection {
     const nextNonBlank = this.searchNextNonBlankLine();
     const lineIdx = nextNonBlank < 0 ? this.maxLineIdx : nextNonBlank;
     const charIdx = this.editor.document.lineAt(lineIdx).firstNonWhitespaceCharacterIndex;
-    this.snapTo(lineIdx, charIdx, selecting);
-    this.snapTo(lineIdx, charIdx, selecting);
+    return this.updateSelection(lineIdx, charIdx, selecting);
   }
 
-  toBeginningOfBlock(selecting: boolean) {
+  toBeginningOfBlock(selecting: boolean): vscode.Selection {
     const prevBlank = this.searchPreviousBlankLine();
     const lineIdx = prevBlank < 0 ? 0 : prevBlank + 1;
     const charIdx = this.editor.document.lineAt(lineIdx).firstNonWhitespaceCharacterIndex;
-    this.snapTo(lineIdx, charIdx, selecting);
+    return this.updateSelection(lineIdx, charIdx, selecting);
   }
 
-  toEndOfPreviousBlock(selecting: boolean) {
+  toEndOfPreviousBlock(selecting: boolean): vscode.Selection {
     const prevNonBlank = this.searchPreviousNonBlankLine();
     const lineIdx = prevNonBlank < 0 ? 0 : prevNonBlank;
     const charIdx = this.editor.document.lineAt(lineIdx).text.length;
-    this.snapTo(lineIdx, charIdx, selecting);
-  }
-
-  swapAnchor() {
-    this.editor.selections = this.editor.selections.map((sel) => {
-      return new vscode.Selection(sel.active, sel.anchor);
-    });
-    if (this.editor.selections.length == 1) {
-      this.reveal(this.editor.selection.active);
-    }
+    return this.updateSelection(lineIdx, charIdx, selecting);
   }
 }

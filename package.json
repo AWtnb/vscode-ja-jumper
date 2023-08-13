@@ -23,10 +23,6 @@
     "onCommand:ja-jumper.jumpBack",
     "onCommand:ja-jumper.jumpDown",
     "onCommand:ja-jumper.jumpUp",
-    "onCommand:ja-jumper.jumpForeSelect",
-    "onCommand:ja-jumper.jumpBackSelect",
-    "onCommand:ja-jumper.jumpDownSelect",
-    "onCommand:ja-jumper.jumpUpSelect",
     "onCommand:ja-jumper.swapAnchor"
   ],
   "main": "./out/extension.js",
@@ -51,42 +47,50 @@
       {
         "command": "ja-jumper.jumpFore",
         "key": "alt+j",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus",
+        "args": false
       },
       {
         "command": "ja-jumper.jumpBack",
         "key": "alt+k",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus",
+        "args": false
       },
       {
         "command": "ja-jumper.jumpDown",
         "key": "ctrl+down",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus",
+        "args": false
       },
       {
         "command": "ja-jumper.jumpUp",
         "key": "ctrl+up",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus",
+        "args": false
       },
       {
-        "command": "ja-jumper.jumpForeSelect",
+        "command": "ja-jumper.jumpFore",
         "key": "alt+shift+j",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus",
+        "args": true
       },
       {
-        "command": "ja-jumper.jumpBackSelect",
+        "command": "ja-jumper.jumpBack",
         "key": "alt+shift+k",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus",
+        "args": true
       },
       {
-        "command": "ja-jumper.jumpDownSelect",
+        "command": "ja-jumper.jumpDown",
         "key": "ctrl+shift+down",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus",
+        "args": true
       },
       {
-        "command": "ja-jumper.jumpUpSelect",
+        "command": "ja-jumper.jumpUp",
         "key": "ctrl+shift+up",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus",
+        "args": true
       },
       {
         "command": "ja-jumper.swapAnchor",
