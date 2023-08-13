@@ -56,7 +56,7 @@ export class Jumper {
       return cursor.invoke(curLine.lineNumber, toChar);
     });
     const handler = new SelectionHandler(sels);
-    this._editor.selections = handler.getReduced();
+    this._editor.selections = handler.getReduced(true);
     this._editor.revealRange(this._editor.selections[0]);
   }
 
@@ -110,7 +110,7 @@ export class Jumper {
       return cursor.endOfPreviousBlock();
     });
     const handler = new SelectionHandler(sels);
-    this._editor.selections = handler.getReduced();
+    this._editor.selections = handler.getReduced(true);
     this._editor.revealRange(this._editor.selections[0]);
   }
 }

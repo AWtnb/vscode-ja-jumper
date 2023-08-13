@@ -16,18 +16,28 @@ export class SelectionHandler {
   }
 
   private getOrdered(): vscode.Selection[] {
-    return this._sels.sort((a: vscode.Selection, b: vscode.Selection): number => {
-      if (a.end.isBefore(b.start)) {
-        return -1;
-      }
-      if (b.end.isBefore(a.start)) {
-        return 1;
-      }
-      return 0;
-    });
+    return this._sels
+      .sort((a: vscode.Selection, b: vscode.Selection): number => {
+        if (a.end.isBefore(b.end)) {
+          return -1;
+        }
+        if (b.end.isBefore(a.end)) {
+          return 1;
+        }
+        return 0;
+      })
+      .sort((a: vscode.Selection, b: vscode.Selection): number => {
+        if (a.start.isBefore(b.start)) {
+          return -1;
+        }
+        if (b.start.isBefore(a.start)) {
+          return 1;
+        }
+        return 0;
+      });
   }
 
-  getReduced(): vscode.Selection[] {
+  getReduced(backward: boolean = false): vscode.Selection[] {
     const ordered = this.getOrdered();
     const sels: vscode.Selection[] = [];
     for (let i = 0; i < ordered.length; i++) {
@@ -42,7 +52,11 @@ export class SelectionHandler {
       }
       if (last.intersection(cur)) {
         sels.pop();
-        sels.push(unifySelections(last, cur));
+        if (backward) {
+          sels.push(unifySelections(cur, last));
+        } else {
+          sels.push(unifySelections(last, cur));
+        }
       } else {
         sels.push(cur);
       }
