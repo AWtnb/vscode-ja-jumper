@@ -7,7 +7,7 @@
     "url": "https://github.com/AWtnb/vscode-ja-jumper"
   },
   "publisher": "awtnb",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "engines": {
     "vscode": "^1.73.0"
   },
