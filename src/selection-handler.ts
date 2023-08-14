@@ -1,13 +1,33 @@
 import * as vscode from "vscode";
 
-const unifySelections = (base: vscode.Selection, another: vscode.Selection): vscode.Selection => {
-  const start = base.start.isBeforeOrEqual(another.start) ? base.start : another.start;
-  const end = base.end.isAfterOrEqual(another.end) ? base.end : another.end;
-  if (base.isReversed) {
-    return new vscode.Selection(end, start);
+class SelectionMerger {
+  private readonly _base: vscode.Selection;
+  private readonly _reversed: boolean;
+
+  /**
+   * @param base {vscode.Selection} A selection to be base of merge.
+   * @param reversed {boolean} If merge selections from lower to upper, set this `true`.
+   */
+  constructor(base: vscode.Selection, reversed: boolean) {
+    this._base = base;
+    this._reversed = reversed;
   }
-  return new vscode.Selection(start, end);
-};
+
+  /**
+   * merge with another selection.
+   * @param another {vscode.Selection} Another selection. This should be after `base` selection.
+   * @returns {vscode.Selection} New selection with smaller start position and larger end position.
+   * Anchor and active position is determined by original selection orientation and `reversed` patameter.
+   */
+  with(another: vscode.Selection): vscode.Selection {
+    const uni = this._base.union(another);
+    const orientationBase = this._reversed ? another : this._base;
+    if (orientationBase.isReversed) {
+      return new vscode.Selection(uni.end, uni.start);
+    }
+    return new vscode.Selection(uni.start, uni.end);
+  }
+}
 
 export class SelectionHandler {
   private readonly _sels: vscode.Selection[];
@@ -52,11 +72,8 @@ export class SelectionHandler {
       }
       if (last.intersection(cur)) {
         sels.pop();
-        if (backward) {
-          sels.push(unifySelections(cur, last));
-        } else {
-          sels.push(unifySelections(last, cur));
-        }
+        const merger = new SelectionMerger(last, backward);
+        sels.push(merger.with(cur));
       } else {
         sels.push(cur);
       }
