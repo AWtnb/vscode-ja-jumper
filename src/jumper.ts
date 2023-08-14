@@ -4,13 +4,16 @@ import { Searcher } from "./searcher";
 import { Cursor } from "./cursor";
 import { SelectionHandler } from "./selection-handler";
 
+const config = vscode.workspace.getConfiguration("ja-jumper");
+const delimiters: string = config.get("delimiters") || "";
+const isGreedy: boolean = config.get("isGreedy") || false;
+const SEARCHER = new Searcher(delimiters, isGreedy);
+
 export class Jumper {
   private readonly _editor: vscode.TextEditor;
-  private readonly _searcher: Searcher;
   private readonly _selecting: boolean;
-  constructor(editor: vscode.TextEditor, searcher: Searcher, selecting: boolean = false) {
+  constructor(editor: vscode.TextEditor, selecting: boolean = false) {
     this._editor = editor;
-    this._searcher = searcher;
     this._selecting = selecting;
   }
 
@@ -28,7 +31,7 @@ export class Jumper {
       }
       const curLine = cursor.line;
       const afterCursor = curLine.text.substring(cursor.active.character);
-      const delta = this._searcher.forward(afterCursor);
+      const delta = SEARCHER.forward(afterCursor);
       const toChar = delta < 0 ? curLine.text.length : cursor.active.character + delta + 1;
       return cursor.invoke(curLine.lineNumber, toChar);
     });
@@ -51,7 +54,7 @@ export class Jumper {
       }
       const curLine = cursor.line;
       const beforeCursor = curLine.text.substring(0, cursor.active.character);
-      const delta = this._searcher.backward(beforeCursor);
+      const delta = SEARCHER.backward(beforeCursor);
       const toChar = delta < 0 ? 0 : cursor.active.character - delta - 1;
       return cursor.invoke(curLine.lineNumber, toChar);
     });
