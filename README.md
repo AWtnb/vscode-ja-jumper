@@ -8,7 +8,7 @@ Cursor-jumper for Japanese (and other any language) punctuations.
 
 ### Default behavior
 
-+ Jumping (selectable with `Shift` modifier):
++ Jumping (text selectable with `Shift` modifier):
     + `alt+j` snaps cursor forward to next punctuation.
     + `alt+k` snaps cursor backward to previous punctuation.
     + `ctrl+down` snaps cursor to the bottom of block.
@@ -16,7 +16,32 @@ Cursor-jumper for Japanese (and other any language) punctuations.
 + Swapping:
     + `alt+shift+s` swaps selection anchor and active cursor position.
 
-### Target punctuations
+### Configuration
+
+Keybindings for cursor-jumping are configurable in `keybindings.json` .
+
+For example, `ja-jumper.jumpFore` command can be binded to `ctrl+k n` (`n` after `ctrl k`) by setting `keybindings.json` as below:
+
+```
+[
+    {
+        "key": "ctrl+k n",
+        "command": "ja-jumper.jumpFore",
+        "when": "editorTextFocus",
+    },
+    {
+        "key": "ctrl+k shift+n",
+        "command": "ja-jumper.jumpFore",
+        "args": true,
+        "when": "editorTextFocus",
+    }
+]
+```
+
+Text selection behavior on cursor-jumping can be specified with `args` to `ja-jumper.jumpFore` (default is `false`).
+
+
+#### Target punctuations
 
 ```
 、，。．；：「」『』【】（）〔〕《》〈〉［］“”‘’・！？～／…―　←↓↑→○●▲△▼▽◆◇■□★☆〓[]().,=<>:;`'\" #/-
