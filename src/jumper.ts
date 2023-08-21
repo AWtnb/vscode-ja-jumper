@@ -17,6 +17,12 @@ export class Jumper {
     this._selecting = selecting;
   }
 
+  private revealCursor(toBottom: boolean) {
+    const target: vscode.Selection = toBottom ? this._editor.selections[this._editor.selections.length - 1] : this._editor.selections[0];
+    const range = new vscode.Range(target.active, target.active);
+    this._editor.revealRange(range);
+  }
+
   jumpFore() {
     const sels: vscode.Selection[] = this._editor.selections.map((sel) => {
       const cursor = new Cursor(this._editor, sel, this._selecting);
@@ -37,7 +43,7 @@ export class Jumper {
     });
     const handler = new SelectionHandler(sels);
     this._editor.selections = handler.getReduced();
-    this._editor.revealRange(this._editor.selections[this._editor.selections.length - 1]);
+    this.revealCursor(true);
   }
 
   jumpBack() {
@@ -60,7 +66,7 @@ export class Jumper {
     });
     const handler = new SelectionHandler(sels);
     this._editor.selections = handler.getReduced(true);
-    this._editor.revealRange(this._editor.selections[0]);
+    this.revealCursor(false);
   }
 
   jumpDown() {
@@ -87,7 +93,7 @@ export class Jumper {
     });
     const handler = new SelectionHandler(sels);
     this._editor.selections = handler.getReduced();
-    this._editor.revealRange(this._editor.selections[this._editor.selections.length - 1]);
+    this.revealCursor(true);
   }
 
   jumpUp() {
@@ -114,6 +120,6 @@ export class Jumper {
     });
     const handler = new SelectionHandler(sels);
     this._editor.selections = handler.getReduced(true);
-    this._editor.revealRange(this._editor.selections[0]);
+    this.revealCursor(false);
   }
 }
